@@ -1,13 +1,15 @@
+
 import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Eye, Edit } from 'lucide-react';
+import { Search, Eye, Edit, ArrowUpDown } from 'lucide-react';
 import { useInventoryData, InventoryItem } from '@/hooks/useInventoryData';
 import { ItemDetailsDialog } from './ItemDetailsDialog';
 import { EditItemDialog } from './EditItemDialog';
+import { ManualTransactionDialog } from './ManualTransactionDialog';
 
 export const InventoryTable = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -16,6 +18,8 @@ export const InventoryTable = () => {
   const [showDetails, setShowDetails] = useState(false);
   const [editItem, setEditItem] = useState<InventoryItem | null>(null);
   const [showEdit, setShowEdit] = useState(false);
+  const [transactionItem, setTransactionItem] = useState<InventoryItem | null>(null);
+  const [showTransaction, setShowTransaction] = useState(false);
   const { items, isLoading } = useInventoryData();
 
   const filteredItems = items.filter(item => {
@@ -45,6 +49,11 @@ export const InventoryTable = () => {
   const handleEditItem = (item: InventoryItem) => {
     setEditItem(item);
     setShowEdit(true);
+  };
+
+  const handleManualTransaction = (item: InventoryItem) => {
+    setTransactionItem(item);
+    setShowTransaction(true);
   };
 
   if (isLoading) {
@@ -86,6 +95,7 @@ export const InventoryTable = () => {
                 <TableHead className="text-right">كود الصنف</TableHead>
                 <TableHead className="text-right">اسم الصنف</TableHead>
                 <TableHead className="text-right">المخزن</TableHead>
+                <TableHead className="text-right">الفرع</TableHead>
                 <TableHead className="text-right">اللجنة</TableHead>
                 <TableHead className="text-right">التصنيف</TableHead>
                 <TableHead className="text-right">الرصيد الحالي</TableHead>
@@ -101,6 +111,7 @@ export const InventoryTable = () => {
                   <TableCell className="font-mono text-sm">{item.itemCode}</TableCell>
                   <TableCell className="font-medium">{item.itemName}</TableCell>
                   <TableCell>{item.storeroom}</TableCell>
+                  <TableCell>{item.branch}</TableCell>
                   <TableCell>{item.team}</TableCell>
                   <TableCell>{item.category}</TableCell>
                   <TableCell className="text-center font-semibold">
@@ -131,6 +142,14 @@ export const InventoryTable = () => {
                       >
                         <Edit className="w-4 h-4" />
                       </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleManualTransaction(item)}
+                        className="bg-blue-50 hover:bg-blue-100"
+                      >
+                        <ArrowUpDown className="w-4 h-4" />
+                      </Button>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -156,6 +175,12 @@ export const InventoryTable = () => {
         item={editItem}
         open={showEdit}
         onOpenChange={setShowEdit}
+      />
+
+      <ManualTransactionDialog
+        item={transactionItem}
+        open={showTransaction}
+        onOpenChange={setShowTransaction}
       />
     </>
   );

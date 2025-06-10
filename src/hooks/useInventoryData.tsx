@@ -6,6 +6,7 @@ export interface InventoryItem {
   itemCode: string;
   itemName: string;
   storeroom: string;
+  branch: string;
   team: string;
   category: string;
   status: string;
@@ -32,6 +33,7 @@ export const useInventoryData = () => {
           itemCode: 'ITM001',
           itemName: 'أقلام حبر زرقاء',
           storeroom: 'المخزن الرئيسي',
+          branch: 'الفرع الأول',
           team: 'عيني',
           category: 'قرطاسية',
           status: 'جيد',
@@ -45,6 +47,7 @@ export const useInventoryData = () => {
           itemCode: 'ITM002',
           itemName: 'ورق A4',
           storeroom: 'المخزن الرئيسي',
+          branch: 'الفرع الأول',
           team: 'إعلامي',
           category: 'قرطاسية',
           status: 'جيد',
@@ -58,6 +61,7 @@ export const useInventoryData = () => {
           itemCode: 'ITM003',
           itemName: 'كبلات USB',
           storeroom: 'مخزن الفرع الأول',
+          branch: 'الفرع الثاني',
           team: 'مجددون',
           category: 'عدة',
           status: 'جيد',
@@ -71,6 +75,7 @@ export const useInventoryData = () => {
           itemCode: 'ITM004',
           itemName: 'مناديل ورقية',
           storeroom: 'المخزن الرئيسي',
+          branch: 'الفرع الثالث',
           team: 'نسائي',
           category: 'مستهلكات',
           status: 'جيد',
@@ -84,6 +89,7 @@ export const useInventoryData = () => {
           itemCode: 'ITM005',
           itemName: 'كراسي بلاستيكية',
           storeroom: 'مخزن الفرع الثاني',
+          branch: 'الفرع الثاني',
           team: 'عيني',
           category: 'عدة',
           status: 'جيد',
