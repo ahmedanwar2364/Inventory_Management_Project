@@ -5,13 +5,16 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Edit, AlertTriangle } from 'lucide-react';
+import { Search, Edit, AlertTriangle, Eye } from 'lucide-react';
 import { useInventoryData } from '@/hooks/useInventoryData';
+import { ItemDetailsDialog } from './ItemDetailsDialog';
 
 export const InventoryTable = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState('all');
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [showDetails, setShowDetails] = useState(false);
   const { items, isLoading } = useInventoryData();
 
   const getStatusBadge = (currentStock: number, reorderThreshold: number) => {
@@ -40,12 +43,17 @@ export const InventoryTable = () => {
     return matchesSearch && matchesStatus && matchesCategory;
   });
 
+  const handleViewDetails = (item) => {
+    setSelectedItem(item);
+    setShowDetails(true);
+  };
+
   if (isLoading) {
     return <div className="text-center py-8">جاري التحميل...</div>;
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" dir="rtl">
       {/* Filters */}
       <div className="flex flex-col md:flex-row gap-4">
         <div className="relative flex-1">
@@ -92,6 +100,7 @@ export const InventoryTable = () => {
               <TableHead className="text-right">اللجنة</TableHead>
               <TableHead className="text-right">التصنيف</TableHead>
               <TableHead className="text-right">الرصيد الحالي</TableHead>
+              <TableHead className="text-right">المسحوب</TableHead>
               <TableHead className="text-right">حد الخطر</TableHead>
               <TableHead className="text-right">الحالة</TableHead>
               <TableHead className="text-right">الإجراءات</TableHead>
@@ -114,14 +123,23 @@ export const InventoryTable = () => {
                     <span className="text-gray-500 text-sm">{item.unit}</span>
                   </div>
                 </TableCell>
+                <TableCell className="text-center">
+                  <span className="font-semibold text-blue-600">{item.outsideStoreroom}</span>
+                  <span className="text-gray-500 text-sm mr-1">{item.unit}</span>
+                </TableCell>
                 <TableCell className="text-center">{item.reorderThreshold}</TableCell>
                 <TableCell>
                   {getStatusBadge(item.currentStock, item.reorderThreshold)}
                 </TableCell>
                 <TableCell>
-                  <Button variant="ghost" size="sm">
-                    <Edit className="w-4 h-4" />
-                  </Button>
+                  <div className="flex gap-1">
+                    <Button variant="ghost" size="sm" onClick={() => handleViewDetails(item)}>
+                      <Eye className="w-4 h-4" />
+                    </Button>
+                    <Button variant="ghost" size="sm">
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
@@ -134,6 +152,12 @@ export const InventoryTable = () => {
           لا توجد أصناف تطابق معايير البحث
         </div>
       )}
+
+      <ItemDetailsDialog 
+        item={selectedItem} 
+        open={showDetails} 
+        onOpenChange={setShowDetails} 
+      />
     </div>
   );
 };
