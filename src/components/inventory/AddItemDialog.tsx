@@ -18,6 +18,7 @@ export const AddItemDialog = ({ open, onOpenChange }: AddItemDialogProps) => {
     itemCode: '',
     itemName: '',
     storeroom: '',
+    branch: '',
     team: '',
     category: '',
     status: '',
@@ -51,6 +52,7 @@ export const AddItemDialog = ({ open, onOpenChange }: AddItemDialogProps) => {
         itemCode: '',
         itemName: '',
         storeroom: '',
+        branch: '',
         team: '',
         category: '',
         status: '',
@@ -109,12 +111,28 @@ export const AddItemDialog = ({ open, onOpenChange }: AddItemDialogProps) => {
                   <SelectValue placeholder="اختر المخزن" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="STR001">المخزن الرئيسي</SelectItem>
-                  <SelectItem value="STR002">مخزن الفرع الأول</SelectItem>
-                  <SelectItem value="STR003">مخزن الفرع الثاني</SelectItem>
+                  <SelectItem value="المخزن الرئيسي">المخزن الرئيسي</SelectItem>
+                  <SelectItem value="مخزن الفرع الأول">مخزن الفرع الأول</SelectItem>
+                  <SelectItem value="مخزن الفرع الثاني">مخزن الفرع الثاني</SelectItem>
                 </SelectContent>
               </Select>
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="branch">الفرع</Label>
+              <Select value={formData.branch} onValueChange={(value) => setFormData(prev => ({ ...prev, branch: value }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="اختر الفرع" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="الفرع الأول">الفرع الأول</SelectItem>
+                  <SelectItem value="الفرع الثاني">الفرع الثاني</SelectItem>
+                  <SelectItem value="الفرع الثالث">الفرع الثالث</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="team">اللجنة</Label>
               <Select value={formData.team} onValueChange={(value) => setFormData(prev => ({ ...prev, team: value }))}>
@@ -129,9 +147,6 @@ export const AddItemDialog = ({ open, onOpenChange }: AddItemDialogProps) => {
                 </SelectContent>
               </Select>
             </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="category">التصنيف</Label>
               <Select value={formData.category} onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}>
@@ -145,6 +160,9 @@ export const AddItemDialog = ({ open, onOpenChange }: AddItemDialogProps) => {
                 </SelectContent>
               </Select>
             </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="status">الحالة</Label>
               <Select value={formData.status} onValueChange={(value) => setFormData(prev => ({ ...prev, status: value }))}>
@@ -158,9 +176,6 @@ export const AddItemDialog = ({ open, onOpenChange }: AddItemDialogProps) => {
                 </SelectContent>
               </Select>
             </div>
-          </div>
-
-          <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="unit">وحدة القياس</Label>
               <Select value={formData.unit} onValueChange={(value) => setFormData(prev => ({ ...prev, unit: value }))}>
@@ -175,6 +190,9 @@ export const AddItemDialog = ({ open, onOpenChange }: AddItemDialogProps) => {
                 </SelectContent>
               </Select>
             </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="originalStock">الرصيد الأصلي</Label>
               <Input
