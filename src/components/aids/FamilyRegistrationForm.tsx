@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -221,7 +220,7 @@ export const FamilyRegistrationForm = () => {
         </CardContent>
       </Card>
 
-      {/* Families List */}
+      {/* Families List - Sheet Style Table */}
       <Card>
         <CardHeader>
           <div className="flex justify-between items-center">
@@ -237,53 +236,103 @@ export const FamilyRegistrationForm = () => {
             </div>
           </div>
         </CardHeader>
-        <CardContent>
-          <div className="border rounded-lg overflow-hidden">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-gray-50">
-                  <TableHead className="text-right">كود العائلة</TableHead>
-                  <TableHead className="text-right">اسم العائلة</TableHead>
-                  <TableHead className="text-right">المنطقة</TableHead>
-                  <TableHead className="text-right">المرشد</TableHead>
-                  <TableHead className="text-right">رقم الهوية</TableHead>
-                  <TableHead className="text-right">الجوال</TableHead>
-                  <TableHead className="text-right">عدد الأفراد</TableHead>
-                  <TableHead className="text-right">نوع المساعدة</TableHead>
-                  <TableHead className="text-right">اللجنة</TableHead>
-                  <TableHead className="text-right">الإجراءات</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredFamilies.map((family) => (
-                  <TableRow key={family.familyCode} className="hover:bg-gray-50">
-                    <TableCell className="font-mono text-sm">{family.familyCode}</TableCell>
-                    <TableCell className="font-medium">{family.name}</TableCell>
-                    <TableCell>{family.area}</TableCell>
-                    <TableCell>{family.guide}</TableCell>
-                    <TableCell className="font-mono">{family.nationalId}</TableCell>
-                    <TableCell className="font-mono">{family.phone}</TableCell>
-                    <TableCell className="text-center">{family.familySize}</TableCell>
-                    <TableCell>
-                      <Badge variant="outline">{family.aidType}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge className="bg-blue-100 text-blue-800">{family.committee}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="sm">
-                          <Edit className="w-4 h-4" />
+        <CardContent className="p-0">
+          <div className="overflow-auto max-h-[600px]">
+            <table className="w-full border-collapse border border-gray-200 bg-white">
+              <thead className="sticky top-0 bg-gray-50 z-10">
+                <tr>
+                  <th className="border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 text-right min-w-[100px]">
+                    كود العائلة
+                  </th>
+                  <th className="border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 text-right min-w-[150px]">
+                    اسم العائلة
+                  </th>
+                  <th className="border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 text-right min-w-[120px]">
+                    المنطقة
+                  </th>
+                  <th className="border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 text-right min-w-[100px]">
+                    المرشد
+                  </th>
+                  <th className="border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 text-right min-w-[120px]">
+                    رقم الهوية
+                  </th>
+                  <th className="border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 text-right min-w-[110px]">
+                    الجوال
+                  </th>
+                  <th className="border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 text-center min-w-[80px]">
+                    عدد الأفراد
+                  </th>
+                  <th className="border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 text-right min-w-[120px]">
+                    نوع المساعدة
+                  </th>
+                  <th className="border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 text-right min-w-[100px]">
+                    اللجنة
+                  </th>
+                  <th className="border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 text-center min-w-[120px]">
+                    الإجراءات
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredFamilies.map((family, index) => (
+                  <tr key={family.familyCode} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors`}>
+                    <td className="border border-gray-300 px-3 py-2 text-sm font-mono text-blue-600">
+                      {family.familyCode}
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2 text-sm font-medium">
+                      {family.name}
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2 text-sm">
+                      {family.area}
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2 text-sm">
+                      {family.guide}
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2 text-sm font-mono">
+                      {family.nationalId}
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2 text-sm font-mono">
+                      {family.phone}
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2 text-sm text-center font-medium">
+                      {family.familySize}
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2 text-sm">
+                      <span className="inline-block bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full">
+                        {family.aidType}
+                      </span>
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2 text-sm">
+                      <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                        {family.committee}
+                      </span>
+                    </td>
+                    <td className="border border-gray-300 px-3 py-2">
+                      <div className="flex gap-1 justify-center">
+                        <Button variant="outline" size="sm" className="h-7 w-7 p-0">
+                          <Edit className="w-3 h-3" />
                         </Button>
-                        <Button variant="outline" size="sm" className="text-red-600 hover:bg-red-50">
-                          <Trash2 className="w-4 h-4" />
+                        <Button variant="outline" size="sm" className="h-7 w-7 p-0 text-red-600 hover:bg-red-50">
+                          <Trash2 className="w-3 h-3" />
                         </Button>
                       </div>
-                    </TableCell>
-                  </TableRow>
+                    </td>
+                  </tr>
                 ))}
-              </TableBody>
-            </Table>
+              </tbody>
+            </table>
+          </div>
+          
+          {/* Summary Row */}
+          <div className="border-t border-gray-300 bg-gray-50 px-4 py-3">
+            <div className="text-sm text-gray-600">
+              إجمالي العائلات: <span className="font-semibold">{filteredFamilies.length}</span> عائلة
+              {searchTerm && (
+                <span className="mr-4">
+                  نتائج البحث: <span className="font-semibold">{filteredFamilies.length}</span>
+                </span>
+              )}
+            </div>
           </div>
         </CardContent>
       </Card>
