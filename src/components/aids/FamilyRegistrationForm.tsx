@@ -1,12 +1,10 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Search, Plus, Edit, Trash2 } from 'lucide-react';
+import { Search, Plus, Trash2, Save, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface Family {
@@ -22,17 +20,7 @@ interface Family {
 }
 
 export const FamilyRegistrationForm = () => {
-  const [formData, setFormData] = useState({
-    area: '',
-    guide: '',
-    name: '',
-    nationalId: '',
-    phone: '',
-    familySize: 1,
-    aidType: ''
-  });
-  
-  const [families] = useState<Family[]>([
+  const [families, setFamilies] = useState<Family[]>([
     {
       familyCode: 'FAM001',
       area: 'المنطقة الشمالية',
@@ -57,55 +45,165 @@ export const FamilyRegistrationForm = () => {
     }
   ]);
 
+  const [editingCell, setEditingCell] = useState<{rowIndex: number, field: string} | null>(null);
+  const [tempValue, setTempValue] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const { toast } = useToast();
 
-  const handleInputChange = (field: string, value: string | number) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
+  const aidTypes = ['غسالة', 'ثلاجة', 'وجبات', 'ملابس', 'أجهزة كهربائية', 'أثاث', 'مواد غذائية'];
+  const committees = ['عيني', 'إطعام', 'كسوة', 'أثاث'];
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Validation
-    if (!formData.name || !formData.nationalId || !formData.phone) {
-      toast({
-        title: "خطأ في البيانات",
-        description: "يرجى ملء جميع الحقول المطلوبة",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Check for duplicate national ID
-    const isDuplicate = families.some(family => family.nationalId === formData.nationalId);
-    if (isDuplicate) {
-      toast({
-        title: "هوية مكررة",
-        description: "رقم الهوية الوطنية مسجل مسبقاً",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    toast({
-      title: "تم تسجيل العائلة بنجاح",
-      description: `تم إضافة عائلة ${formData.name} إلى قاعدة البيانات`,
-    });
-
-    // Reset form
-    setFormData({
+  const addNewRow = () => {
+    const newFamily: Family = {
+      familyCode: `FAM${String(families.length + 1).padStart(3, '0')}`,
       area: '',
       guide: '',
       name: '',
       nationalId: '',
       phone: '',
       familySize: 1,
-      aidType: ''
+      aidType: '',
+      committee: ''
+    };
+    setFamilies([...families, newFamily]);
+  };
+
+  const deleteRow = (index: number) => {
+    const newFamilies = families.filter((_, i) => i !== index);
+    setFamilies(newFamilies);
+    toast({
+      title: "تم حذف العائلة",
+      description: "تم حذف العائلة بنجاح",
     });
+  };
+
+  const startEdit = (rowIndex: number, field: string, currentValue: any) => {
+    setEditingCell({ rowIndex, field });
+    setTempValue(String(currentValue));
+  };
+
+  const saveEdit = () => {
+    if (!editingCell) return;
+    
+    const { rowIndex, field } = editingCell;
+    const newFamilies = [...families];
+    
+    if (field === 'familySize') {
+      newFamilies[rowIndex][field] = parseInt(tempValue) || 1;
+    } else {
+      newFamilies[rowIndex][field as keyof Family] = tempValue as any;
+    }
+    
+    setFamilies(newFamilies);
+    setEditingCell(null);
+    setTempValue('');
+  };
+
+  const cancelEdit = () => {
+    setEditingCell(null);
+    setTempValue('');
+  };
+
+  const renderEditableCell = (rowIndex: number, field: string, value: any) => {
+    const isEditing = editingCell?.rowIndex === rowIndex && editingCell?.field === field;
+    
+    if (isEditing) {
+      if (field === 'aidType') {
+        return (
+          <div className="flex items-center gap-1">
+            <Select value={tempValue} onValueChange={setTempValue}>
+              <SelectTrigger className="h-7 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {aidTypes.map(type => (
+                  <SelectItem key={type} value={type}>{type}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button size="sm" variant="ghost" className="h-6 w-6 p-0" onClick={saveEdit}>
+              <Save className="w-3 h-3" />
+            </Button>
+            <Button size="sm" variant="ghost" className="h-6 w-6 p-0" onClick={cancelEdit}>
+              <X className="w-3 h-3" />
+            </Button>
+          </div>
+        );
+      }
+      
+      if (field === 'committee') {
+        return (
+          <div className="flex items-center gap-1">
+            <Select value={tempValue} onValueChange={setTempValue}>
+              <SelectTrigger className="h-7 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {committees.map(committee => (
+                  <SelectItem key={committee} value={committee}>{committee}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button size="sm" variant="ghost" className="h-6 w-6 p-0" onClick={saveEdit}>
+              <Save className="w-3 h-3" />
+            </Button>
+            <Button size="sm" variant="ghost" className="h-6 w-6 p-0" onClick={cancelEdit}>
+              <X className="w-3 h-3" />
+            </Button>
+          </div>
+        );
+      }
+      
+      return (
+        <div className="flex items-center gap-1">
+          <Input
+            value={tempValue}
+            onChange={(e) => setTempValue(e.target.value)}
+            className="h-7 text-xs"
+            type={field === 'familySize' ? 'number' : 'text'}
+            min={field === 'familySize' ? 1 : undefined}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') saveEdit();
+              if (e.key === 'Escape') cancelEdit();
+            }}
+            autoFocus
+          />
+          <Button size="sm" variant="ghost" className="h-6 w-6 p-0" onClick={saveEdit}>
+            <Save className="w-3 h-3" />
+          </Button>
+          <Button size="sm" variant="ghost" className="h-6 w-6 p-0" onClick={cancelEdit}>
+            <X className="w-3 h-3" />
+          </Button>
+        </div>
+      );
+    }
+    
+    const cellContent = field === 'aidType' ? (
+      <span className="inline-block bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full">
+        {value || 'غير محدد'}
+      </span>
+    ) : field === 'committee' ? (
+      <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+        {value || 'غير محدد'}
+      </span>
+    ) : field === 'familyCode' ? (
+      <span className="font-mono text-blue-600">{value}</span>
+    ) : field === 'nationalId' || field === 'phone' ? (
+      <span className="font-mono">{value}</span>
+    ) : field === 'familySize' ? (
+      <span className="font-medium">{value}</span>
+    ) : (
+      <span>{value || ''}</span>
+    );
+    
+    return (
+      <div 
+        className="cursor-pointer hover:bg-blue-50 p-1 rounded min-h-[28px] flex items-center"
+        onClick={() => startEdit(rowIndex, field, value)}
+      >
+        {cellContent}
+      </div>
+    );
   };
 
   const filteredFamilies = families.filter(family =>
@@ -116,123 +214,27 @@ export const FamilyRegistrationForm = () => {
 
   return (
     <div className="space-y-6" dir="rtl">
-      {/* Registration Form */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Plus className="w-5 h-5" />
-            تسجيل عائلة جديدة
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="area">المنطقة *</Label>
-              <Input
-                id="area"
-                value={formData.area}
-                onChange={(e) => handleInputChange('area', e.target.value)}
-                placeholder="مثل: المنطقة الشمالية"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="guide">المرشد *</Label>
-              <Input
-                id="guide"
-                value={formData.guide}
-                onChange={(e) => handleInputChange('guide', e.target.value)}
-                placeholder="اسم المرشد"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="name">اسم العائلة *</Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
-                placeholder="اسم رب الأسرة أو العائلة"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="nationalId">رقم الهوية الوطنية *</Label>
-              <Input
-                id="nationalId"
-                value={formData.nationalId}
-                onChange={(e) => handleInputChange('nationalId', e.target.value)}
-                placeholder="1234567890"
-                maxLength={10}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="phone">رقم الجوال *</Label>
-              <Input
-                id="phone"
-                value={formData.phone}
-                onChange={(e) => handleInputChange('phone', e.target.value)}
-                placeholder="05xxxxxxxx"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="familySize">عدد أفراد الأسرة</Label>
-              <Input
-                id="familySize"
-                type="number"
-                min="1"
-                value={formData.familySize}
-                onChange={(e) => handleInputChange('familySize', parseInt(e.target.value))}
-              />
-            </div>
-
-            <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="aidType">نوع المساعدة المطلوبة</Label>
-              <Select value={formData.aidType} onValueChange={(value) => handleInputChange('aidType', value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="اختر نوع المساعدة" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="غسالة">غسالة</SelectItem>
-                  <SelectItem value="ثلاجة">ثلاجة</SelectItem>
-                  <SelectItem value="وجبات">وجبات</SelectItem>
-                  <SelectItem value="ملابس">ملابس</SelectItem>
-                  <SelectItem value="أجهزة كهربائية">أجهزة كهربائية</SelectItem>
-                  <SelectItem value="أثاث">أثاث</SelectItem>
-                  <SelectItem value="مواد غذائية">مواد غذائية</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="md:col-span-2">
-              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
-                تسجيل العائلة
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-
-      {/* Families List - Sheet Style Table */}
+      {/* Header with Add Button and Search */}
       <Card>
         <CardHeader>
           <div className="flex justify-between items-center">
-            <CardTitle>العائلات المسجلة</CardTitle>
-            <div className="relative w-72">
-              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <Input
-                placeholder="البحث في العائلات..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pr-10"
-              />
+            <CardTitle className="flex items-center gap-2">
+              العائلات المسجلة - جدول قابل للتحرير
+            </CardTitle>
+            <div className="flex items-center gap-4">
+              <Button onClick={addNewRow} className="bg-green-600 hover:bg-green-700">
+                <Plus className="w-4 h-4 mr-2" />
+                إضافة عائلة جديدة
+              </Button>
+              <div className="relative w-72">
+                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Input
+                  placeholder="البحث في العائلات..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pr-10"
+                />
+              </div>
             </div>
           </div>
         </CardHeader>
@@ -268,51 +270,49 @@ export const FamilyRegistrationForm = () => {
                   <th className="border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 text-right min-w-[100px]">
                     اللجنة
                   </th>
-                  <th className="border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 text-center min-w-[120px]">
-                    الإجراءات
+                  <th className="border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 text-center min-w-[80px]">
+                    حذف
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {filteredFamilies.map((family, index) => (
                   <tr key={family.familyCode} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors`}>
-                    <td className="border border-gray-300 px-3 py-2 text-sm font-mono text-blue-600">
-                      {family.familyCode}
+                    <td className="border border-gray-300 px-2 py-1 text-sm">
+                      {renderEditableCell(index, 'familyCode', family.familyCode)}
                     </td>
-                    <td className="border border-gray-300 px-3 py-2 text-sm font-medium">
-                      {family.name}
+                    <td className="border border-gray-300 px-2 py-1 text-sm">
+                      {renderEditableCell(index, 'name', family.name)}
                     </td>
-                    <td className="border border-gray-300 px-3 py-2 text-sm">
-                      {family.area}
+                    <td className="border border-gray-300 px-2 py-1 text-sm">
+                      {renderEditableCell(index, 'area', family.area)}
                     </td>
-                    <td className="border border-gray-300 px-3 py-2 text-sm">
-                      {family.guide}
+                    <td className="border border-gray-300 px-2 py-1 text-sm">
+                      {renderEditableCell(index, 'guide', family.guide)}
                     </td>
-                    <td className="border border-gray-300 px-3 py-2 text-sm font-mono">
-                      {family.nationalId}
+                    <td className="border border-gray-300 px-2 py-1 text-sm">
+                      {renderEditableCell(index, 'nationalId', family.nationalId)}
                     </td>
-                    <td className="border border-gray-300 px-3 py-2 text-sm font-mono">
-                      {family.phone}
+                    <td className="border border-gray-300 px-2 py-1 text-sm">
+                      {renderEditableCell(index, 'phone', family.phone)}
                     </td>
-                    <td className="border border-gray-300 px-3 py-2 text-sm text-center font-medium">
-                      {family.familySize}
+                    <td className="border border-gray-300 px-2 py-1 text-sm text-center">
+                      {renderEditableCell(index, 'familySize', family.familySize)}
                     </td>
-                    <td className="border border-gray-300 px-3 py-2 text-sm">
-                      <span className="inline-block bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full">
-                        {family.aidType}
-                      </span>
+                    <td className="border border-gray-300 px-2 py-1 text-sm">
+                      {renderEditableCell(index, 'aidType', family.aidType)}
                     </td>
-                    <td className="border border-gray-300 px-3 py-2 text-sm">
-                      <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
-                        {family.committee}
-                      </span>
+                    <td className="border border-gray-300 px-2 py-1 text-sm">
+                      {renderEditableCell(index, 'committee', family.committee)}
                     </td>
-                    <td className="border border-gray-300 px-3 py-2">
-                      <div className="flex gap-1 justify-center">
-                        <Button variant="outline" size="sm" className="h-7 w-7 p-0">
-                          <Edit className="w-3 h-3" />
-                        </Button>
-                        <Button variant="outline" size="sm" className="h-7 w-7 p-0 text-red-600 hover:bg-red-50">
+                    <td className="border border-gray-300 px-2 py-1">
+                      <div className="flex justify-center">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="h-7 w-7 p-0 text-red-600 hover:bg-red-50"
+                          onClick={() => deleteRow(index)}
+                        >
                           <Trash2 className="w-3 h-3" />
                         </Button>
                       </div>
