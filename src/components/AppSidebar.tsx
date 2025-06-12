@@ -9,7 +9,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { Package, Truck, Users } from "lucide-react"
+import { Package, Truck } from "lucide-react"
 import { Link, useLocation } from "react-router-dom"
 
 const items = [
@@ -19,14 +19,9 @@ const items = [
     icon: Package,
   },
   {
-    title: "طلبات القوافل",
+    title: "إدارة القوافل والمساعدات",
     url: "/convoy-requests",
     icon: Truck,
-  },
-  {
-    title: "فعالية المساعدات",
-    url: "/aids-event",
-    icon: Users,
   },
 ]
 

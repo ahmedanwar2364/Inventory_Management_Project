@@ -9,7 +9,6 @@ import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/s
 import { AppSidebar } from "@/components/AppSidebar";
 import Dashboard from "./pages/Dashboard";
 import ConvoyRequests from "./pages/ConvoyRequests";
-import AidsEventDashboard from "./pages/AidsEventDashboard"; // Import the new page
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 
@@ -46,11 +45,6 @@ const AppRoutes = () => {
       <Route path="/convoy-requests" element={
         <ProtectedRoute>
           <ConvoyRequests />
-        </ProtectedRoute>
-      } />
-      <Route path="/aids-event" element={
-        <ProtectedRoute>
-          <AidsEventDashboard />
         </ProtectedRoute>
       } />
       <Route path="*" element={<NotFound />} />
