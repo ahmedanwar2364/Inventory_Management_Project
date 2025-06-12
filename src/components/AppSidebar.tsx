@@ -1,3 +1,4 @@
+
 import {
   Sidebar,
   SidebarContent,
@@ -8,9 +9,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+<<<<<<< HEAD
 import { Package, Truck, LogOut, Users } from "lucide-react"
+=======
+import { Package, Truck } from "lucide-react"
+>>>>>>> parent of e93de26 (Add logout button and user info to sidebar)
 import { Link, useLocation } from "react-router-dom"
-import { useAuth } from "@/hooks/useAuth"
 
 const items = [
   {
@@ -32,7 +36,6 @@ const items = [
 
 export function AppSidebar() {
   const location = useLocation()
-  const { user, logout } = useAuth()
 
   return (
     <Sidebar>
@@ -55,24 +58,6 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      {/* Sidebar Footer: User Info & Logout */}
-      <div className="mt-auto p-4 border-t border-gray-200 flex flex-col gap-2">
-        {user && (
-          <div className="flex items-center gap-2 mb-2">
-            <div className="flex flex-col text-xs text-gray-700">
-              <span className="font-semibold">{user.name}</span>
-              <span className="text-gray-500">{user.email}</span>
-            </div>
-          </div>
-        )}
-        <button
-          onClick={logout}
-          className="flex items-center gap-2 w-full px-3 py-2 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 transition"
-        >
-          <LogOut className="w-4 h-4" />
-          <span>تسجيل الخروج</span>
-        </button>
-      </div>
     </Sidebar>
   )
 }
