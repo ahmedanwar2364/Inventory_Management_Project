@@ -45,7 +45,7 @@ export const FamilyRegistrationForm = () => {
     }
   ]);
 
-  const [editingCell, setEditingCell] = useState<{rowIndex: number, field: string} | null>(null);
+  const [editingCell, setEditingCell] = useState<{rowIndex: number, field: keyof Family} | null>(null);
   const [tempValue, setTempValue] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const { toast } = useToast();
@@ -77,7 +77,7 @@ export const FamilyRegistrationForm = () => {
     });
   };
 
-  const startEdit = (rowIndex: number, field: string, currentValue: any) => {
+  const startEdit = (rowIndex: number, field: keyof Family, currentValue: string | number) => {
     setEditingCell({ rowIndex, field });
     setTempValue(String(currentValue));
   };
@@ -91,7 +91,7 @@ export const FamilyRegistrationForm = () => {
     if (field === 'familySize') {
       newFamilies[rowIndex][field] = parseInt(tempValue) || 1;
     } else {
-      newFamilies[rowIndex][field as keyof Family] = tempValue as any;
+      (newFamilies[rowIndex] as any)[field] = tempValue;
     }
     
     setFamilies(newFamilies);
@@ -104,7 +104,7 @@ export const FamilyRegistrationForm = () => {
     setTempValue('');
   };
 
-  const renderEditableCell = (rowIndex: number, field: string, value: any) => {
+  const renderEditableCell = (rowIndex: number, field: keyof Family, value: string | number) => {
     const isEditing = editingCell?.rowIndex === rowIndex && editingCell?.field === field;
     
     if (isEditing) {
@@ -112,7 +112,7 @@ export const FamilyRegistrationForm = () => {
         return (
           <div className="flex items-center gap-1">
             <Select value={tempValue} onValueChange={setTempValue}>
-              <SelectTrigger className="h-7 text-xs">
+              <SelectTrigger className="h-8 text-sm border-2 border-blue-500">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -121,11 +121,11 @@ export const FamilyRegistrationForm = () => {
                 ))}
               </SelectContent>
             </Select>
-            <Button size="sm" variant="ghost" className="h-6 w-6 p-0" onClick={saveEdit}>
-              <Save className="w-3 h-3" />
+            <Button size="sm" variant="ghost" className="h-7 w-7 p-0 hover:bg-green-100" onClick={saveEdit}>
+              <Save className="w-4 h-4 text-green-600" />
             </Button>
-            <Button size="sm" variant="ghost" className="h-6 w-6 p-0" onClick={cancelEdit}>
-              <X className="w-3 h-3" />
+            <Button size="sm" variant="ghost" className="h-7 w-7 p-0 hover:bg-red-100" onClick={cancelEdit}>
+              <X className="w-4 h-4 text-red-600" />
             </Button>
           </div>
         );
@@ -135,7 +135,7 @@ export const FamilyRegistrationForm = () => {
         return (
           <div className="flex items-center gap-1">
             <Select value={tempValue} onValueChange={setTempValue}>
-              <SelectTrigger className="h-7 text-xs">
+              <SelectTrigger className="h-8 text-sm border-2 border-blue-500">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -144,11 +144,11 @@ export const FamilyRegistrationForm = () => {
                 ))}
               </SelectContent>
             </Select>
-            <Button size="sm" variant="ghost" className="h-6 w-6 p-0" onClick={saveEdit}>
-              <Save className="w-3 h-3" />
+            <Button size="sm" variant="ghost" className="h-7 w-7 p-0 hover:bg-green-100" onClick={saveEdit}>
+              <Save className="w-4 h-4 text-green-600" />
             </Button>
-            <Button size="sm" variant="ghost" className="h-6 w-6 p-0" onClick={cancelEdit}>
-              <X className="w-3 h-3" />
+            <Button size="sm" variant="ghost" className="h-7 w-7 p-0 hover:bg-red-100" onClick={cancelEdit}>
+              <X className="w-4 h-4 text-red-600" />
             </Button>
           </div>
         );
@@ -159,7 +159,7 @@ export const FamilyRegistrationForm = () => {
           <Input
             value={tempValue}
             onChange={(e) => setTempValue(e.target.value)}
-            className="h-7 text-xs"
+            className="h-8 text-sm border-2 border-blue-500 focus:border-blue-600"
             type={field === 'familySize' ? 'number' : 'text'}
             min={field === 'familySize' ? 1 : undefined}
             onKeyDown={(e) => {
@@ -168,38 +168,39 @@ export const FamilyRegistrationForm = () => {
             }}
             autoFocus
           />
-          <Button size="sm" variant="ghost" className="h-6 w-6 p-0" onClick={saveEdit}>
-            <Save className="w-3 h-3" />
+          <Button size="sm" variant="ghost" className="h-7 w-7 p-0 hover:bg-green-100" onClick={saveEdit}>
+            <Save className="w-4 h-4 text-green-600" />
           </Button>
-          <Button size="sm" variant="ghost" className="h-6 w-6 p-0" onClick={cancelEdit}>
-            <X className="w-3 h-3" />
+          <Button size="sm" variant="ghost" className="h-7 w-7 p-0 hover:bg-red-100" onClick={cancelEdit}>
+            <X className="w-4 h-4 text-red-600" />
           </Button>
         </div>
       );
     }
     
     const cellContent = field === 'aidType' ? (
-      <span className="inline-block bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full">
+      <span className="inline-block bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full font-medium">
         {value || 'غير محدد'}
       </span>
     ) : field === 'committee' ? (
-      <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+      <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-medium">
         {value || 'غير محدد'}
       </span>
     ) : field === 'familyCode' ? (
-      <span className="font-mono text-blue-600">{value}</span>
+      <span className="font-mono text-blue-600 font-medium">{value}</span>
     ) : field === 'nationalId' || field === 'phone' ? (
-      <span className="font-mono">{value}</span>
+      <span className="font-mono text-gray-700">{value}</span>
     ) : field === 'familySize' ? (
-      <span className="font-medium">{value}</span>
+      <span className="font-semibold text-center text-gray-800">{value}</span>
     ) : (
-      <span>{value || ''}</span>
+      <span className="text-gray-800">{value || ''}</span>
     );
     
     return (
       <div 
-        className="cursor-pointer hover:bg-blue-50 p-1 rounded min-h-[28px] flex items-center"
+        className="cursor-pointer hover:bg-blue-50 p-2 rounded transition-colors min-h-[36px] flex items-center border border-transparent hover:border-blue-200"
         onClick={() => startEdit(rowIndex, field, value)}
+        title="انقر للتحرير"
       >
         {cellContent}
       </div>
@@ -215,14 +216,14 @@ export const FamilyRegistrationForm = () => {
   return (
     <div className="space-y-6" dir="rtl">
       {/* Header with Add Button and Search */}
-      <Card>
-        <CardHeader>
+      <Card className="shadow-lg border-0">
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-200">
           <div className="flex justify-between items-center">
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-gray-800">
               العائلات المسجلة - جدول قابل للتحرير
             </CardTitle>
             <div className="flex items-center gap-4">
-              <Button onClick={addNewRow} className="bg-green-600 hover:bg-green-700">
+              <Button onClick={addNewRow} className="bg-green-600 hover:bg-green-700 shadow-lg">
                 <Plus className="w-4 h-4 mr-2" />
                 إضافة عائلة جديدة
               </Button>
@@ -232,88 +233,88 @@ export const FamilyRegistrationForm = () => {
                   placeholder="البحث في العائلات..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pr-10"
+                  className="pr-10 border-gray-300 focus:border-blue-500"
                 />
               </div>
             </div>
           </div>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="overflow-auto max-h-[600px]">
-            <table className="w-full border-collapse border border-gray-200 bg-white">
-              <thead className="sticky top-0 bg-gray-50 z-10">
+          <div className="overflow-auto max-h-[700px] border border-gray-200 rounded-b-lg">
+            <table className="w-full border-collapse bg-white">
+              <thead className="sticky top-0 bg-gray-100 z-10 border-b-2 border-gray-300">
                 <tr>
-                  <th className="border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 text-right min-w-[100px]">
+                  <th className="border-r border-gray-300 px-4 py-3 text-sm font-bold text-gray-700 text-right min-w-[100px] bg-gray-50">
                     كود العائلة
                   </th>
-                  <th className="border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 text-right min-w-[150px]">
+                  <th className="border-r border-gray-300 px-4 py-3 text-sm font-bold text-gray-700 text-right min-w-[150px] bg-gray-50">
                     اسم العائلة
                   </th>
-                  <th className="border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 text-right min-w-[120px]">
+                  <th className="border-r border-gray-300 px-4 py-3 text-sm font-bold text-gray-700 text-right min-w-[120px] bg-gray-50">
                     المنطقة
                   </th>
-                  <th className="border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 text-right min-w-[100px]">
+                  <th className="border-r border-gray-300 px-4 py-3 text-sm font-bold text-gray-700 text-right min-w-[100px] bg-gray-50">
                     المرشد
                   </th>
-                  <th className="border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 text-right min-w-[120px]">
+                  <th className="border-r border-gray-300 px-4 py-3 text-sm font-bold text-gray-700 text-right min-w-[120px] bg-gray-50">
                     رقم الهوية
                   </th>
-                  <th className="border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 text-right min-w-[110px]">
+                  <th className="border-r border-gray-300 px-4 py-3 text-sm font-bold text-gray-700 text-right min-w-[110px] bg-gray-50">
                     الجوال
                   </th>
-                  <th className="border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 text-center min-w-[80px]">
+                  <th className="border-r border-gray-300 px-4 py-3 text-sm font-bold text-gray-700 text-center min-w-[80px] bg-gray-50">
                     عدد الأفراد
                   </th>
-                  <th className="border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 text-right min-w-[120px]">
+                  <th className="border-r border-gray-300 px-4 py-3 text-sm font-bold text-gray-700 text-right min-w-[120px] bg-gray-50">
                     نوع المساعدة
                   </th>
-                  <th className="border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 text-right min-w-[100px]">
+                  <th className="border-r border-gray-300 px-4 py-3 text-sm font-bold text-gray-700 text-right min-w-[100px] bg-gray-50">
                     اللجنة
                   </th>
-                  <th className="border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 text-center min-w-[80px]">
+                  <th className="px-4 py-3 text-sm font-bold text-gray-700 text-center min-w-[80px] bg-gray-50">
                     حذف
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {filteredFamilies.map((family, index) => (
-                  <tr key={family.familyCode} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors`}>
-                    <td className="border border-gray-300 px-2 py-1 text-sm">
+                  <tr key={family.familyCode} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-25 transition-colors border-b border-gray-200`}>
+                    <td className="border-r border-gray-200 px-2 py-1">
                       {renderEditableCell(index, 'familyCode', family.familyCode)}
                     </td>
-                    <td className="border border-gray-300 px-2 py-1 text-sm">
+                    <td className="border-r border-gray-200 px-2 py-1">
                       {renderEditableCell(index, 'name', family.name)}
                     </td>
-                    <td className="border border-gray-300 px-2 py-1 text-sm">
+                    <td className="border-r border-gray-200 px-2 py-1">
                       {renderEditableCell(index, 'area', family.area)}
                     </td>
-                    <td className="border border-gray-300 px-2 py-1 text-sm">
+                    <td className="border-r border-gray-200 px-2 py-1">
                       {renderEditableCell(index, 'guide', family.guide)}
                     </td>
-                    <td className="border border-gray-300 px-2 py-1 text-sm">
+                    <td className="border-r border-gray-200 px-2 py-1">
                       {renderEditableCell(index, 'nationalId', family.nationalId)}
                     </td>
-                    <td className="border border-gray-300 px-2 py-1 text-sm">
+                    <td className="border-r border-gray-200 px-2 py-1">
                       {renderEditableCell(index, 'phone', family.phone)}
                     </td>
-                    <td className="border border-gray-300 px-2 py-1 text-sm text-center">
+                    <td className="border-r border-gray-200 px-2 py-1 text-center">
                       {renderEditableCell(index, 'familySize', family.familySize)}
                     </td>
-                    <td className="border border-gray-300 px-2 py-1 text-sm">
+                    <td className="border-r border-gray-200 px-2 py-1">
                       {renderEditableCell(index, 'aidType', family.aidType)}
                     </td>
-                    <td className="border border-gray-300 px-2 py-1 text-sm">
+                    <td className="border-r border-gray-200 px-2 py-1">
                       {renderEditableCell(index, 'committee', family.committee)}
                     </td>
-                    <td className="border border-gray-300 px-2 py-1">
+                    <td className="px-2 py-1">
                       <div className="flex justify-center">
                         <Button 
                           variant="outline" 
                           size="sm" 
-                          className="h-7 w-7 p-0 text-red-600 hover:bg-red-50"
+                          className="h-8 w-8 p-0 text-red-600 hover:bg-red-50 border-red-200 hover:border-red-300"
                           onClick={() => deleteRow(index)}
                         >
-                          <Trash2 className="w-3 h-3" />
+                          <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
                     </td>
@@ -324,12 +325,12 @@ export const FamilyRegistrationForm = () => {
           </div>
           
           {/* Summary Row */}
-          <div className="border-t border-gray-300 bg-gray-50 px-4 py-3">
-            <div className="text-sm text-gray-600">
-              إجمالي العائلات: <span className="font-semibold">{filteredFamilies.length}</span> عائلة
+          <div className="border-t-2 border-gray-300 bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4">
+            <div className="text-sm text-gray-700 font-medium">
+              إجمالي العائلات: <span className="font-bold text-blue-600">{filteredFamilies.length}</span> عائلة
               {searchTerm && (
                 <span className="mr-4">
-                  نتائج البحث: <span className="font-semibold">{filteredFamilies.length}</span>
+                  نتائج البحث: <span className="font-bold text-green-600">{filteredFamilies.length}</span>
                 </span>
               )}
             </div>
