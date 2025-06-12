@@ -6,6 +6,7 @@ interface User {
   name: string;
   role: 'مدير المخزن' | 'عضو فريق';
   storeroom: string;
+  committee?: string;
   team?: string;
 }
 
@@ -49,6 +50,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         name: 'فاطمة أحمد',
         role: 'عضو فريق',
         storeroom: 'STR001',
+        committee: 'عيني',
         team: 'عيني'
       }
     ];
