@@ -11,7 +11,11 @@ import {
 } from "@/components/ui/sidebar"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { Package, Truck, LogOut, Users } from "lucide-react"
+=======
+import { Package, Truck } from "lucide-react"
+>>>>>>> parent of e93de26 (Add logout button and user info to sidebar)
 =======
 import { Package, Truck } from "lucide-react"
 >>>>>>> parent of e93de26 (Add logout button and user info to sidebar)
