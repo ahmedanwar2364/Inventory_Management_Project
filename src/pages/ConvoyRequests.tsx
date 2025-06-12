@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,7 +9,6 @@ import { useConvoyManagement } from '@/hooks/useConvoyManagement';
 import { ConvoyRequirementsForm } from '@/components/convoy/ConvoyRequirementsForm';
 import { ConvoyDetailsView } from '@/components/convoy/ConvoyDetailsView';
 import { AdminRequirementsView } from '@/components/convoy/AdminRequirementsView';
-import { FamilyRegistrationForm } from '@/components/aids/FamilyRegistrationForm';
 
 const ConvoyRequests = () => {
   const { user, userRole } = useAuth();
@@ -117,7 +115,6 @@ const ConvoyRequests = () => {
             <TabsTrigger value="convoys">القوافل</TabsTrigger>
             <TabsTrigger value="requirements">الاحتياجات</TabsTrigger>
             {isAdmin && <TabsTrigger value="approvals">الموافقات</TabsTrigger>}
-            <TabsTrigger value="families">العائلات</TabsTrigger>
           </TabsList>
 
           <TabsContent value="convoys" className="mt-6">
@@ -218,20 +215,6 @@ const ConvoyRequests = () => {
               />
             </TabsContent>
           )}
-
-          <TabsContent value="families" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>إدارة العائلات المستفيدة</CardTitle>
-                <CardDescription>
-                  تسجيل وإدارة بيانات العائلات المستفيدة من القوافل
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <FamilyRegistrationForm />
-              </CardContent>
-            </Card>
-          </TabsContent>
         </Tabs>
       </div>
     </div>

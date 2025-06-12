@@ -8,7 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { Package, Truck, LogOut } from "lucide-react"
+import { Package, Truck, LogOut, Users } from "lucide-react"
 import { Link, useLocation } from "react-router-dom"
 import { useAuth } from "@/hooks/useAuth"
 
@@ -22,6 +22,11 @@ const items = [
     title: "إدارة القوافل والمساعدات",
     url: "/convoy-requests",
     icon: Truck,
+  },
+  {
+    title: "العائلات",
+    url: "/families",
+    icon: Users,
   },
 ]
 

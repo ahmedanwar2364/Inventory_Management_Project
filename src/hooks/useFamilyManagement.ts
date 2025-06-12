@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Family } from '@/types/family';
@@ -86,6 +85,7 @@ export const useFamilyManagement = () => {
 
   return {
     families,
+    setFamilies,
     editingCell,
     tempValue,
     setTempValue,

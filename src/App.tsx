@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -11,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import ConvoyRequests from "./pages/ConvoyRequests";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
+import FamiliesPage from "./pages/Families";
 
 const queryClient = new QueryClient();
 
@@ -45,6 +45,16 @@ const AppRoutes = () => {
       <Route path="/convoy-requests" element={
         <ProtectedRoute>
           <ConvoyRequests />
+        </ProtectedRoute>
+      } />
+      <Route path="/warehouses" element={
+        <ProtectedRoute>
+          <Dashboard />
+        </ProtectedRoute>
+      } />
+      <Route path="/families" element={
+        <ProtectedRoute>
+          <FamiliesPage />
         </ProtectedRoute>
       } />
       <Route path="*" element={<NotFound />} />
